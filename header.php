@@ -11,14 +11,7 @@
 <body <?php body_class('menu-layer'); ?>>
 
 <!-- loader -->
-<div class="page-loader">
-    <div class="spinner">
-        <p>در حال بارگذاری...</p>
-        <div class="spinner-area spinner-first"></div>
-        <div class="spinner-area spinner-second"></div>
-        <div class="spinner-area spinner-third"></div>
-    </div>
-</div>
+
 
 <header class="two three" id="stickyHeader">
     <div class="container">
