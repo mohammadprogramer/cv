@@ -10,6 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+
 /**
  * Redirect empty searches to 404 page
  */
@@ -346,3 +347,44 @@ add_action('after_setup_theme', 'custom_image_sizes');
 function custom_image_sizes() {
     add_image_size('service-icon', 50, 50, true); // 50x50 پیکسل، برش داده شود
 }
+
+
+
+//time line resume 
+
+// Register Resume Post Type
+function register_resume_post_type() {
+    $labels = array(
+        'name' => 'Resume Items',
+        'singular_name' => 'Resume Item',
+    );
+
+    $args = array(
+        'labels' => $labels,
+        'public' => true,
+        'has_archive' => false,
+        'supports' => array('title', 'editor'),
+        'show_in_rest' => true,
+        'menu_icon' => 'dashicons-portfolio',
+    );
+
+    register_post_type('resume_item', $args);
+}
+add_action('init', 'register_resume_post_type');
+
+// Register Resume Category Taxonomy
+function register_resume_category() {
+    $labels = array(
+        'name' => 'Resume Categories',
+        'singular_name' => 'Resume Category',
+    );
+
+    $args = array(
+        'labels' => $labels,
+        'hierarchical' => true,
+        'show_in_rest' => true,
+    );
+
+    register_taxonomy('resume_category', 'resume_item', $args);
+}
+add_action('init', 'register_resume_category');
