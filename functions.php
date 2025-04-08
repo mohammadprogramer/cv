@@ -10,7 +10,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-
 /**
  * Redirect empty searches to 404 page
  */
@@ -388,3 +387,5 @@ function register_resume_category() {
     register_taxonomy('resume_category', 'resume_item', $args);
 }
 add_action('init', 'register_resume_category');
+
+// در فایل functions.php تم خود
