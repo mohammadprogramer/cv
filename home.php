@@ -181,93 +181,124 @@ get_header("header"); // فراخوانی هدر اختصاصی
     </div>
 </section>
 
-<section class="my-resume gap">
-			<div class="container">
-				<div class="hading" data-aos="fade-up"  data-aos-delay="200" data-aos-duration="300">
-					<img alt="dots" src="<?php echo get_template_directory_uri(); ?>/img/dots.png">
-					<p>Professional Experience</p>
-					<h2>My Resume</h2>
-				</div>
-			<div class="row">
-								<div class="col-lg-6 col-md-12 col-sm-12" data-aos="fade-up"  data-aos-delay="200" data-aos-duration="300">
-								  <div class="resume-data">
-									<div class="headings resume">
-										<h3>Education</h3>
-									</div>
-									<div class="education">
-										<h5>2012 to 2014</h5>
-										<p>Bachelor Degree</p>
-										<div class="studies">
-											<h6>University of Studies</h6>
-											<p>Lorem ipsum indolor st amet, cmetc
-												 ur adips locing elit, sedi dinm indolo  
-												 sum indolor st ailmes.</p>
-										</div>
-									</div>
-									<div class="education">
-										<h5>2010 to 2012</h5>
-										<p>Master Degree</p>
-										<div class="studies">
-											<h6>University of South Education</h6>
-											<p>Lorem ipsum indolor st amet, cmetc
-												 ur adips locing elit, sedi dinm indolo  
-												 sum indolor st ailmes.</p>
-										</div>
-									</div>
-									<div class="education end">
-										<h5>2008 to 2010</h5>
-										<p>Advanced Post Graduate</p>
-										<div class="studies">
-											<h6>University of South Education</h6>
-											<p>Lorem ipsum indolor st amet, cmetc
-												 ur adips locing elit, sedi dinm indolo  
-												 sum indolor st ailmes.</p>
-										</div>
-									</div>
-								  </div>
-								</div>
-								
-								<div class="col-lg-6 col-md-12 col-sm-12" data-aos="fade-up"  data-aos-delay="200" data-aos-duration="300">
-								  <div class="resume-data">
-									<div class="headings resume">
-										<h3>Experience</h3>
-									</div>
-									<div class="education">
-										<h5>2018 to Present</h5>
-										<p>Graphic Designer / Web Designer</p>
-										<div class="studies">
-											<h6>Envato Studio</h6>
-											<p>Lorem ipsum indolor st amet, cmetc
-												 ur adips locing elit, sedi dinm indolo  
-												 sum indolor st ailmes.</p>
-										</div>
-									</div>
-									<div class="education">
-										<h5>2016 to 2018</h5>
-										<p>Junior Ui/Ux Designer</p>
-										<div class="studies">
-											<h6>Envato Studio</h6>
-											<p>Lorem ipsum indolor st amet, cmetc
-												 ur adips locing elit, sedi dinm indolo  
-												 sum indolor st ailmes.</p>
-										</div>
-									</div>
-									<div class="education end">
-										<h5>20014 to 2016</h5>
-										<p>Senior Ui/Ux Designer</p>
-										<div class="studies">
-											<h6>Envato Studio</h6>
-											<p>Lorem ipsum indolor st amet, cmetc
-												 ur adips locing elit, sedi dinm indolo  
-												 sum indolor st ailmes.</p>
-										</div>
-									</div>
+<?php
+// تست نمایش پست‌ها
 
-								</div>
-							  </div>
-							</div>
-		  </div>
-</section> 
+function resume_timeline_shortcode($atts) {
+    ob_start();
+    
+    // کوئری برای بخش Education
+    $education = new WP_Query(array(
+        'post_type' => 'resume_item',
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'resume_category',
+                'field' => 'slug',
+                'terms' => 'education'
+            )
+        ),
+        'posts_per_page' => -1,
+        'orderby' => 'date',
+        'order' => 'DESC'
+    ));
+    
+    // کوئری برای بخش Experience
+    $experience = new WP_Query(array(
+        'post_type' => 'resume_item',
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'resume_category',
+                'field' => 'slug',
+                'terms' => 'experience'
+            )
+        ),
+        'posts_per_page' => -1,
+        'orderby' => 'date',
+        'order' => 'DESC'
+    ));
+    ?>
+    
+    <section class="my-resume gap">
+        <div class="container">
+            <div class="hading" data-aos="fade-up" data-aos-delay="200" data-aos-duration="300">
+                <img alt="dots" src="<?php echo get_template_directory_uri(); ?>/img/dots.png">
+                <p>Professional Experience</p>
+                <h2>My Resume</h2>
+            </div>
+            
+            <div class="row">
+                <!-- بخش Education -->
+                <div class="col-lg-6 col-md-12 col-sm-12" data-aos="fade-up" data-aos-delay="200" data-aos-duration="300">
+                    <div class="resume-data">
+                        <div class="headings resume">
+                            <h3>Education</h3>
+                        </div>
+                        
+                        <?php if ($education->have_posts()): ?>
+                            <?php while ($education->have_posts()): $education->the_post(); ?>
+                                <div class="education <?php echo ($education->current_post + 1 === $education->post_count) ? 'end' : ''; ?>">
+                                    <?php if ($period = get_field('period')): ?>
+                                        <h5><?php echo esc_html($period); ?></h5>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($position = get_field('position')): ?>
+                                        <p><?php echo esc_html($position); ?></p>
+                                    <?php endif; ?>
+                                    
+                                    <div class="studies">
+                                        <h6><?php the_title(); ?></h6>
+                                        <?php the_content(); ?>
+                                    </div>
+                                </div>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <p>No education items found.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                
+                <!-- بخش Experience -->
+                <div class="col-lg-6 col-md-12 col-sm-12" data-aos="fade-up" data-aos-delay="200" data-aos-duration="300">
+                    <div class="resume-data">
+                        <div class="headings resume">
+                            <h3>Experience</h3>
+                        </div>
+                        
+                        <?php if ($experience->have_posts()): ?>
+                            <?php while ($experience->have_posts()): $experience->the_post(); ?>
+                                <div class="education <?php echo ($experience->current_post + 1 === $experience->post_count) ? 'end' : ''; ?>">
+                                    <?php if ($period = get_field('period')): ?>
+                                        <h5><?php echo esc_html($period); ?></h5>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($position = get_field('position')): ?>
+                                        <p><?php echo esc_html($position); ?></p>
+                                    <?php endif; ?>
+                                    
+                                    <div class="studies">
+                                        <h6><?php the_title(); ?></h6>
+                                        <?php the_content(); ?>
+                                    </div>
+                                </div>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <p>No experience items found.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <?php
+    wp_reset_postdata();
+    return ob_get_clean();
+}
+add_shortcode('resume_timeline', 'resume_timeline_shortcode');
+?>
+
+<?php echo do_shortcode('[resume_timeline]'); ?>
+
 <section class="my-project gap">
 	<div class="container">
 		<div class="hading" data-aos="fade-up"  data-aos-delay="200" data-aos-duration="300">
@@ -525,11 +556,9 @@ get_header("header"); // فراخوانی هدر اختصاصی
                                 </a>
                             </h4>
                             
-                            <?php if (get_field('short_description')): ?>
-                                <p><?php the_field('short_description'); ?></p>
-                            <?php else: ?>
-                                <p><?php echo wp_trim_words(get_the_excerpt(), 15); ?></p>
-                            <?php endif; ?>
+
+
+
                             
                             <a class="magic-hover magic-hover__square" href="<?php the_permalink(); ?>">
                                 <i class="fa-solid fa-angle-right"></i>
